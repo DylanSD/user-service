@@ -1,5 +1,6 @@
 package com.dksd.service.user.model;
 
+import com.dksd.crypt.BPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class User {
         this.email = email;
         this.firstName = first;
         this.lastName = last;
-        this.password = Password.hashPassword(password);
+        this.password = BPassword.hashPassword(password);
         this.created = new Date();
         this.lastLogon = new Date();
     }

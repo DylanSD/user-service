@@ -1,8 +1,7 @@
 package com.dksd.service.user.controller;
 
-import com.dksd.service.user.model.Password;
+import com.dksd.crypt.BPassword;
 import com.dksd.service.user.model.User;
-import com.dksd.service.user.service.DuplicateUserException;
 import com.dksd.service.user.service.UserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,6 +41,16 @@ public class UserController {
         return new ResponseEntity<>(userService.add(user), HttpStatus.CREATED);
     }
 
+    @PostMapping(value = "/users/logon/{id}")
+    public ResponseEntity<User> logon(@PathVariable String id, @RequestBody User user) {
+        logger.info("Logon Request for user id {id} received.", user);
+        if (userService.findByEmailExists(user.getEmail())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        user.setLastLogon(new Date());
+        return new ResponseEntity<>(userService.add(user), HttpStatus.CREATED);
+    }
+
     @GetMapping(value = "/users")
     public ResponseEntity<List<User>> getAllUsers() {
         logger.info("Request for getting all entries received.");
@@ -52,9 +61,9 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
         User userExisting = userService.findOne(id);
         logger.info("Finding User number {} and got existing User {} we want to update with {}", id, userExisting, user);
-        if (!Password.checkPassword(user.getPassword(), userExisting.getPassword())) {
+        if (!BPassword.checkPassword(user.getPassword(), userExisting.getPassword())) {
             logger.info("Updating user {} password!", user.getEmail());
-            userExisting.setPassword(Password.hashPassword(user.getPassword()));
+            userExisting.setPassword(BPassword.hashPassword(user.getPassword()));
         }
         logger.info("Updated existing User to {}", userExisting);
         return new ResponseEntity<>(userService.update(userExisting), HttpStatus.OK);

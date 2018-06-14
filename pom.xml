@@ -21,6 +21,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+    	    <groupId>com.dksd.crypto.service</groupId>
+    	    <artifactId>crypto-utils</artifactId>
+    	    <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
         <dependency>
             <groupId>org.mindrot</groupId>
