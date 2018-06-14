@@ -25,19 +25,19 @@ public class UserJsonTest {
         //assertThat(this.json.write(entry)).isEqualToJson("expected.json");
         // Or use JSON path based assertions
         JsonContent<User> result = this.json.write(entry);
-        assertThat(result).hasJsonPathStringValue("@.description");
-        assertThat(result).extractingJsonPathStringValue("@.description")
-                .isEqualTo("description");
-        assertThat(result).hasJsonPathStringValue("@.title");
-        assertThat(result).extractingJsonPathStringValue("@.title")
-                .isEqualTo("title");
+        assertThat(result).hasJsonPathStringValue("@.email");
+        assertThat(result).extractingJsonPathStringValue("@.email")
+                .isEqualTo("dylansd@gmail.com");
+        assertThat(result).hasJsonPathStringValue("@.firstName");
+        assertThat(result).extractingJsonPathStringValue("@.firstName")
+                .isEqualTo("Dylan");
 
         //assertThat(result).hasJsonPathNumberValue("@.origHourEstimate");
         //assertThat(result).extractingJsonPathNumberValue("@.origHourEstimate").isEqualTo("24");
 
-        assertThat(result).hasJsonPathStringValue("@.parentId");
-        assertThat(result).extractingJsonPathStringValue("@.parentId")
-                .isEqualTo("0");
+        assertThat(result).hasJsonPathStringValue("@.lastName");
+        assertThat(result).extractingJsonPathStringValue("@.lastName")
+                .isEqualTo("Scott-Dawkins");
     }
 
     @Test
