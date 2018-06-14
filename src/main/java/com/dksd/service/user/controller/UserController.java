@@ -44,11 +44,14 @@ public class UserController {
     @PostMapping(value = "/users/logon/{id}")
     public ResponseEntity<User> logon(@PathVariable String id, @RequestBody User user) {
         logger.info("Logon Request for user id {id} received.", user);
-        if (userService.findByEmailExists(user.getEmail())) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        User dbUser = userService.findOne(id);
+        if (dbUser == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         user.setLastLogon(new Date());
-        return new ResponseEntity<>(userService.add(user), HttpStatus.CREATED);
+        String token = userService.getToken(dbUser, user);
+        user.setToken(token);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/users")

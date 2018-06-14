@@ -26,6 +26,7 @@ public class User {
     private String lastName;
     private Date created;
     private Date lastLogon;
+    private String token;
     private String password; //use bcrypt
 
     public static User EXAMPLE = new User("dylansd@gmail.com", "Dylan", "Scott-Dawkins", "password");

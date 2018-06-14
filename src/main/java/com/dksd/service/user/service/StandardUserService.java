@@ -1,5 +1,6 @@
 package com.dksd.service.user.service;
 
+import com.dksd.crypt.BPassword;
 import com.dksd.service.user.model.User;
 import com.dksd.service.user.repository.SequenceRepository;
 import com.dksd.service.user.repository.UserRepository;
@@ -8,8 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class StandardUserService implements UserService<User, String> {
@@ -19,6 +20,8 @@ public class StandardUserService implements UserService<User, String> {
 
     @Autowired
     private SequenceRepository sequenceRepository;
+
+    private Map<String, String> userTokens = new ConcurrentHashMap<>();
 
     @Override
     public User add(User entry) {
@@ -59,5 +62,13 @@ public class StandardUserService implements UserService<User, String> {
     @Override
     public boolean findByEmailExists(String email) {
         return userRepository.findByEmailExists(email);
+    }
+
+    @Override
+    public String getToken(User dbUser, User user) {
+        if (BPassword.checkPassword(user.getPassword(), dbUser.getPassword())) {
+            return userTokens.put(user.getId(), UUID.randomUUID().toString());
+        }
+        return null;
     }
 }
