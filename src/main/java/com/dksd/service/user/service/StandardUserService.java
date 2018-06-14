@@ -71,4 +71,9 @@ public class StandardUserService implements UserService<User, String> {
         }
         return null;
     }
+
+    @Override
+    public boolean isAuthorized(String id, String token) {
+        return token.equals(userTokens.get(id));
+    }
 }

@@ -19,4 +19,6 @@ public interface UserService<T, ID> {
     boolean findByEmailExists(String email);
 
     String getToken(T dbUser, T user);
+
+    boolean isAuthorized(ID id, String token);
 }

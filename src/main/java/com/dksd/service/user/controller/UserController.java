@@ -73,12 +73,15 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/users/{id}")
-    public ResponseEntity deleteUser(@PathVariable String id) {
-        logger.info("Request to delete User {} received.", id);
-        userService.delete(id);
-        User UserExisting = userService.findOne(id);
+    public ResponseEntity deleteUser(@RequestBody User user) {
+        logger.info("Request to delete User {} received.", user.getId());
+        if (!userService.isAuthorized(user.getId(), user.getToken())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        userService.delete(user.getId());
+        User UserExisting = userService.findOne(user.getId());
         if (UserExisting != null) {
-            logger.error("Could not delete the User id: {} {}.", id, UserExisting);
+            logger.error("Could not delete the User id: {} {}.", user.getId(), UserExisting);
         }
         return ResponseEntity.ok().build();
     }
