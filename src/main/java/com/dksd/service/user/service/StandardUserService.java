@@ -1,6 +1,5 @@
 package com.dksd.service.user.service;
 
-import com.dksd.crypt.BPassword;
 import com.dksd.service.user.model.User;
 import com.dksd.service.user.repository.SequenceRepository;
 import com.dksd.service.user.repository.UserRepository;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class StandardUserService implements UserService<User, String> {
@@ -20,6 +20,8 @@ public class StandardUserService implements UserService<User, String> {
 
     @Autowired
     private SequenceRepository sequenceRepository;
+
+    private long lastExpiry = 0;
 
     private Map<String, String> userTokens = new ConcurrentHashMap<>();
 
@@ -64,16 +66,34 @@ public class StandardUserService implements UserService<User, String> {
         return userRepository.findByEmailExists(email);
     }
 
+    /*
+    Need to talk to android app for permission
+     */
     @Override
-    public String getToken(User dbUser, User user) {
-        if (BPassword.checkPassword(user.getPassword(), dbUser.getPassword())) {
-            return userTokens.put(user.getId(), UUID.randomUUID().toString());
+    public String getToken(User dbUser, User user) throws ExpiredTokenException {
+        if (tokenExpired(user.getToken())) {
+            request2FactorAuth(dbUser.getId());
+            throw new ExpiredTokenException();
         }
+        return userTokens.get(user.getId());
+    }
+
+    private String request2FactorAuth(String id) {
+        //lookup where to send the request to.
+        //push the request.
+        //resposne will come elsewhere
         return null;
     }
 
+    private boolean tokenExpired(String token) {
+        return (System.currentTimeMillis() - lastExpiry > TimeUnit.DAYS.toMillis(3));
+    }
+
     @Override
-    public boolean isAuthorized(String id, String token) {
+    public boolean isTokenValid(String id, String token) {
+        if (token == null || id == null) {
+            return false;
+        }
         return token.equals(userTokens.get(id));
     }
 }

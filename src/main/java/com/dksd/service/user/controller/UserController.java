@@ -48,8 +48,8 @@ public class UserController {
         if (dbUser == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        user.setLastLogon(new Date());
         String token = userService.getToken(dbUser, user);
+        user.setLastLogon(new Date());
         user.setToken(token);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
@@ -111,3 +111,23 @@ public class UserController {
     }
 
 }
+
+
+/*
+
+Ok so lets do the end to end flow then
+
+Website starts up..
+Demo data and etc is static and part of webapge no server requirements.
+
+Create user...
+Text phone...
+Issue token to user...
+Login user...
+Forgot password...text phone again.
+
+Sign up for Twilio... get 2k messages free.
+
+
+
+ */

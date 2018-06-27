@@ -1,6 +1,5 @@
 package com.dksd.service.user.model;
 
-import com.dksd.crypt.BPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +26,6 @@ public class User {
     private Date created;
     private Date lastLogon;
     private String token;
-    private String password; //use bcrypt
 
     public static User EXAMPLE = new User("dylansd@gmail.com", "Dylan", "Scott-Dawkins", "password");
 
@@ -35,7 +33,6 @@ public class User {
         this.email = email;
         this.firstName = first;
         this.lastName = last;
-        this.password = BPassword.hashPassword(password);
         this.created = new Date();
         this.lastLogon = new Date();
     }

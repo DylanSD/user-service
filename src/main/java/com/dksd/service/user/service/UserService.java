@@ -18,7 +18,7 @@ public interface UserService<T, ID> {
 
     boolean findByEmailExists(String email);
 
-    String getToken(T dbUser, T user);
+    String getToken(T dbUser, T user) throws ExpiredTokenException;
 
-    boolean isAuthorized(ID id, String token);
+    boolean isTokenValid(ID id, String token);
 }
